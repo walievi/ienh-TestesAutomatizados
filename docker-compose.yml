@@ -30,6 +30,8 @@ services:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: user
       MYSQL_PASSWORD: password
+    ports:
+      - "33306:3306"
     volumes:
       - type: tmpfs
         target: /var/lib/mysql
