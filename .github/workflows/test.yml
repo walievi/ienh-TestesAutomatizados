@@ -24,7 +24,7 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
-          -v /docker/db/init:/docker-entrypoint-initdb.d
+          -v docker/db/init:/docker-entrypoint-initdb.d
 
       wordpress:
         image: wordpress:latest
@@ -39,7 +39,7 @@ jobs:
           WP_DISABLE_COOKIE_CHECK: "true"
           COOKIE_DOMAIN: localhost
         options: >
-          -v /wordpress/wp-content:/var/www/html/wp-content
+          -v wordpress/wp-content:/var/www/html/wp-content
 
     steps:
     # Checkout do código
