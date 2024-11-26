@@ -24,7 +24,7 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
-          -v "docker/db/init:/docker-entrypoint-initdb.d"
+          -v "${{ github.workspace }}/docker/db/init:/docker-entrypoint-initdb.d"          
 
       wordpress:
         image: wordpress:latest
@@ -39,12 +39,16 @@ jobs:
           WP_DISABLE_COOKIE_CHECK: "true"
           COOKIE_DOMAIN: localhost
         options: >
-          -v "wordpress/wp-content:/var/www/html/wp-content"
+          -v "${{ github.workspace }}/wordpress/wp-content:/var/www/html/wp-content"          
 
     steps:
     # Checkout do código
     - name: Checkout repository
       uses: actions/checkout@v3
+
+#    - name: Import SQL Manually
+#      run: |
+#        docker exec db mysql -uuser -ppassword wordpress < /docker/db/init/wordpress.sql
 
     # Esperar o serviço MySQL estar pronto
     - name: Wait for MySQL
