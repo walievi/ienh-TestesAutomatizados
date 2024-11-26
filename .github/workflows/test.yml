@@ -24,7 +24,7 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
-          -v docker/db/init:/docker-entrypoint-initdb.d
+          -v "docker/db/init:/docker-entrypoint-initdb.d"
 
       wordpress:
         image: wordpress:latest
@@ -39,12 +39,31 @@ jobs:
           WP_DISABLE_COOKIE_CHECK: "true"
           COOKIE_DOMAIN: localhost
         options: >
-          -v wordpress/wp-content:/var/www/html/wp-content
+          -v "wordpress/wp-content:/var/www/html/wp-content"
 
     steps:
     # Checkout do código
     - name: Checkout repository
       uses: actions/checkout@v3
+
+    # Esperar o serviço MySQL estar pronto
+    - name: Wait for MySQL
+      run: |
+        for i in {1..30}; do
+          if mysqladmin ping -h 127.0.0.1 -uuser --password=password --silent; then
+            echo "MySQL is up!"
+            break
+          fi
+          echo "Waiting for MySQL..."
+          sleep 5
+        done
+
+    # Verificar se o .sql foi importado
+    - name: Check SQL Import
+      run: |
+        mysql -h 127.0.0.1 -uuser --password=password wordpress -e "SHOW TABLES;"
+        mysql -h 127.0.0.1 -uuser --password=password wordpress -e "SELECT * FROM wp_users;"
+        
 
     # Esperar os serviços estarem prontos
     - name: Wait for WordPress
