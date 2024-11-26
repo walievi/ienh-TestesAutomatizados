@@ -41,44 +41,39 @@ jobs:
         options: >
           -v /wordpress/wp-content:/var/www/html/wp-content
 
+      playwright:
+        image: mcr.microsoft.com/playwright:v1.39.0-focal
+        env:
+          WP_URL: http://wordpress:80
+        options: >
+          --network-alias=playwright
+          --entrypoint=""
+        ports:
+          - 9000:9000
+
     steps:
-    # Checkout do código
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      # Checkout do código
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    # Esperar os serviços estarem prontos
-    - name: Wait for WordPress
-      run: |
-        for i in {1..30}; do
-          if curl -s http://localhost:8080 > /dev/null; then
-            echo "WordPress is up!"
-            break
-          fi
-          echo "Waiting for WordPress..."
-          sleep 5
-        done
+      # Esperar os serviços estarem prontos
+      - name: Wait for WordPress
+        run: |
+          for i in {1..30}; do
+            if curl -s http://localhost:8080 > /dev/null; then
+              echo "WordPress is up!"
+              break
+            fi
+            echo "Waiting for WordPress..."
+            sleep 5
+          done
 
-    - name: SO dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          libwoff1 libopus0 libvpx7 libevent-2.1-7 libgstapp-1.0-0 libgstpbutils-1.0-0 \
-          libgstreamer-plugins-base1.0-0 libgstreamer1.0-0 libharfbuzz-icu0 libhyphen0 \
-          libgles2 libflite1 libx264-164 libmanette-0.2-0
+      # Instalar dependências do Playwright
+      - name: Install Node Dependencies
+        working-directory: playwright
+        run: npm install
 
-
-    # Instalar dependências do Playwright
-    - name: Install Node Dependencies
-      working-directory: playwright
-      run: npm install
-
-    - name: Install Playwright Dependencies
-      working-directory: playwright
-      run: npx playwright install
-
-    # Executar os testes Playwright
-    - name: Run Playwright Tests
-      working-directory: playwright
-      env:
-        WP_URL: http://localhost:8080
-      run: npx playwright test
+      - name: Run Playwright Tests
+        env:
+          WP_URL: http://localhost:8080
+        run: docker exec -it playwright npx playwright test
