@@ -42,9 +42,11 @@ jobs:
           -v /wordpress/wp-content:/var/www/html/wp-content
 
     steps:
+    # Checkout do código
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    # Esperar os serviços estarem prontos
     - name: Wait for WordPress
       run: |
         for i in {1..30}; do
@@ -54,12 +56,20 @@ jobs:
           fi
           echo "Waiting for WordPress..."
           sleep 5
-        done 
+        done
 
-    - name: Install node dependencies and Run Playwright Tests
+    # Instalar dependências do Playwright
+    - name: Install Node Dependencies
+      working-directory: playwright
+      run: npm install
+
+    - name: Install Playwright Dependencies
+      working-directory: playwright
+      run: npx playwright install
+
+    # Executar os testes Playwright
+    - name: Run Playwright Tests
       working-directory: playwright
       env:
         WP_URL: http://localhost:8080
-      run: | 
-        npm install
-        npx playwright test
+      run: npm test
