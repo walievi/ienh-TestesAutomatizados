@@ -61,6 +61,8 @@ jobs:
     # Instalar dependências do Playwright
     - name: Install Playwright Dependencies
       run: |
+        pwd
+        ls -lah
         cd playwright
         npm install
 
