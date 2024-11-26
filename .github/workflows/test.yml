@@ -17,9 +17,15 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
+    # Instalar Docker Compose
+    - name: Install Docker Compose
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y docker-compose-plugin
+
     # Configurar Docker Compose
     - name: Set up Docker Compose
-      run: docker-compose -f docker-compose.yml up -d
+      run: docker compose -f docker-compose.yml up -d
 
     # Esperar os serviços estarem prontos
     - name: Wait for WordPress
@@ -34,16 +40,13 @@ jobs:
         done
 
     # Instalar dependências do Playwright
-# Instalar dependências do Playwright
     - name: Install Playwright Dependencies
       run: |
-        cd playwright
+        cd path/to/playwright
         npm ci
 
     # Executar os testes Playwright
     - name: Run Playwright Tests
       env:
-        WP_URL: http://localhost:8080 # Ajuste conforme necessário
-      run: |
-        cd playwright
-        npm test
+        WP_URL: http://localhost:8080
+      run: npm test
