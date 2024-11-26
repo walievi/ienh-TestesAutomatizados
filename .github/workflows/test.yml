@@ -20,11 +20,11 @@ jobs:
           MYSQL_USER: user
           MYSQL_PASSWORD: password
         options: >
-          --health-cmd="mysqladmin ping -h localhost -u user --password=password"
+          --health-cmd='mysqladmin ping -h localhost -u user --password=password'
           --health-interval=10s
           --health-timeout=5s
           --health-retries=3
-          -v "${{ github.workspace }}/docker/db/init:/docker-entrypoint-initdb.d"          
+          -v '${{ github.workspace }}/docker/db/init:/docker-entrypoint-initdb.d'        
 
       wordpress:
         image: wordpress:latest
