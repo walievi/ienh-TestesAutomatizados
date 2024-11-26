@@ -41,7 +41,7 @@ services:
   playwrite:
     build:
       context: .
-      dockerfile: ./docker/playwrite/Dockerfile
+      dockerfile: ./docker/playwright/Dockerfile
     environment:
       - WP_URL=http://wordpress:80
     depends_on:
