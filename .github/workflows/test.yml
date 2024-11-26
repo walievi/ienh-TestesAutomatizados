@@ -13,23 +13,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout do código
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    # Instalar Docker Compose
-    - name: Install Docker Compose
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y docker.io
-        sudo curl -L "https://github.com/docker/compose/releases/download/v2.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
+    - name: Build WordPress Image
+      run: docker build -t custom-wordpress -f ./docker/wordpress/Dockerfile .
 
-    # Configurar Docker Compose
-    - name: Set up Docker Compose
-      run: docker-compose -f docker-compose.yml up -d
+    services:
+      db:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: wordpress
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+        options: >
+          --health-cmd="mysqladmin ping -h localhost -u user --password=password"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+          -v /docker/db/init:/docker-entrypoint-initdb.d
 
-    # Esperar os serviços estarem prontos
+      wordpress:
+        image: custom-wordpress
+        env:
+          WORDPRESS_DB_HOST: db:3306
+          WORDPRESS_DB_USER: user
+          WORDPRESS_DB_PASSWORD: password
+          WORDPRESS_DB_NAME: wordpress
+          WP_ENVIRONMENT: development
+          WP_DISABLE_COOKIE_CHECK: "true"
+          COOKIE_DOMAIN: localhost
+        ports:
+          - 8080:80
+
     - name: Wait for WordPress
       run: |
         for i in {1..30}; do
@@ -41,13 +58,11 @@ jobs:
           sleep 5
         done
 
-    # Instalar dependências do Playwright
     - name: Install Playwright Dependencies
       run: |
         cd path/to/playwright
         npm ci
 
-    # Executar os testes Playwright
     - name: Run Playwright Tests
       env:
         WP_URL: http://localhost:8080
