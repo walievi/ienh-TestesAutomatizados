@@ -8,6 +8,8 @@ services:
     build:
       context: .
       dockerfile: ./docker/wordpress/Dockerfile
+    ports:
+      - "80:80"
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: user
@@ -15,7 +17,7 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WP_ENVIRONMENT: development
       WP_DISABLE_COOKIE_CHECK: "true"
-      COOKIE_DOMAIN: localhost
+      COOKIE_DOMAIN: testes.rshare.io
     depends_on:
       - db
     networks:
@@ -33,17 +35,5 @@ services:
         target: /var/lib/mysql
 #      - ./local-data/db_mysql:/var/lib/mysql
       - ./docker/db/init:/docker-entrypoint-initdb.d
-    networks:
-      - ntwk
-
-  nginx:
-    image: nginx:latest
-    ports:
-      - "443:443"  # HTTPS
-    volumes:
-      - ./docker/nginx/conf.d:/etc/nginx/conf.d  # Configuração personalizada do Nginx
-      - ./docker/nginx/certs:/etc/ssl/certs      # Certificados SSL
-    depends_on:
-      - wordpress
     networks:
       - ntwk
