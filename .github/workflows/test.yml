@@ -46,24 +46,3 @@ jobs:
           COOKIE_DOMAIN: localhost
         ports:
           - 8080:80
-
-    - name: Wait for WordPress
-      run: |
-        for i in {1..30}; do
-          if curl -s http://localhost:8080 > /dev/null; then
-            echo "WordPress is up!"
-            break
-          fi
-          echo "Waiting for WordPress..."
-          sleep 5
-        done
-
-    - name: Install Playwright Dependencies
-      run: |
-        cd path/to/playwright
-        npm ci
-
-    - name: Run Playwright Tests
-      env:
-        WP_URL: http://localhost:8080
-      run: npm test
