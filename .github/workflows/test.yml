@@ -62,7 +62,7 @@ jobs:
     - name: Install Playwright Dependencies
       run: |
         cd playwright
-        npm ci
+        npm install
 
     # Executar os testes Playwright
     - name: Run Playwright Tests

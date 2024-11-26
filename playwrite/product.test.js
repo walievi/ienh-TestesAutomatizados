@@ -4,11 +4,11 @@ const AdminLogin = require('./classes/AdminLogin');
 const appUrl = process.env.APP_URL || 'http://localhost:8080';
 
 test.describe('WooCommerce - Manipulação de Produto', () => {
-/*  test('Cria um produto no WooCommerce e verifica na loja', async ({ browser }) => {
+  test('Cria um produto no WooCommerce e verifica na loja', async ({ browser }) => {
     const context = await browser.newContext({
       javaScriptEnabled: true,
       extraHTTPHeaders: {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*!/!*;q=0.8',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
       },
@@ -36,7 +36,7 @@ test.describe('WooCommerce - Manipulação de Produto', () => {
 
     await expect(page.locator('body')).toContainText(productName);
     await expect(page.locator('body')).toContainText(productPrice);
-  });*/
+  });
 
 
 
@@ -80,13 +80,13 @@ test.describe('WooCommerce - Manipulação de Produto', () => {
 
     await expect(page.locator('body')).toContainText(newPrice);
   });
-  
 
-/*  test('Remove um produto da loja', async ({ browser }) => {
+
+  test('Remove um produto da loja', async ({ browser }) => {
     const context = await browser.newContext({
       javaScriptEnabled: true,
       extraHTTPHeaders: {
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*!/!*;q=0.8',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36',
       },
@@ -114,5 +114,5 @@ test.describe('WooCommerce - Manipulação de Produto', () => {
     await page.goto(viewUrl);
 
     await expect(page.locator('body')).not.toContainText(productName);
-  });*/
+  });
 });
