@@ -16,9 +16,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Build WordPress Image
-      run: docker build -t custom-wordpress -f ./docker/wordpress/Dockerfile .
-
     services:
       db:
         image: mysql:8.0
@@ -35,7 +32,9 @@ jobs:
           -v /docker/db/init:/docker-entrypoint-initdb.d
 
       wordpress:
-        image: custom-wordpress
+        image: wordpress:latest
+        ports:
+          - 8080:80
         env:
           WORDPRESS_DB_HOST: db:3306
           WORDPRESS_DB_USER: user
@@ -44,5 +43,5 @@ jobs:
           WP_ENVIRONMENT: development
           WP_DISABLE_COOKIE_CHECK: "true"
           COOKIE_DOMAIN: localhost
-        ports:
-          - 8080:80
+        options: >
+          -v /wordpress/wp-content:/var/www/html/wp-content
