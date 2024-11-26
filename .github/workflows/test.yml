@@ -60,14 +60,12 @@ jobs:
 
     # Instalar dependências do Playwright
     - name: Install Playwright Dependencies
-      run: |
-        cd playwright
-        npm install
+      working-directory: playwright
+      run: npm install
 
     # Executar os testes Playwright
     - name: Run Playwright Tests
+      working-directory: playwright
       env:
         WP_URL: http://localhost:8080
-      run: |
-        ls -lah
-        npm test
+      run: npm test
