@@ -8,8 +8,6 @@ services:
     build:
       context: .
       dockerfile: ./docker/wordpress/Dockerfile
-    ports:
-      - "8080:80"
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: user
@@ -38,12 +36,13 @@ services:
     networks:
       - ntwk
 
-  playwrite:
-    build:
-      context: .
-      dockerfile: ./docker/playwright/Dockerfile
-    environment:
-      - WP_URL=http://wordpress:80
+  nginx:
+    image: nginx:latest
+    ports:
+      - "443:443"  # HTTPS
+    volumes:
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d  # Configuração personalizada do Nginx
+      - ./docker/nginx/certs:/etc/ssl/certs      # Certificados SSL
     depends_on:
       - wordpress
     networks:
